@@ -1,27 +1,39 @@
-name: "Deploy website"
+name: Build and Deploy to Github Pages
 
-runs:
-  using: "composite"
-  steps:
-    - uses: actions/checkout@v3
-    - uses: actions-rs/toolchain@v1.0.6
-      with:
-        toolchain: nightly
-        profile: minimal
-        target: wasm32-unknown-unknown
-        override: true
-    - uses: Swatinem/rust-cache@v2
-    - name: Install Dioxus-CLI
-      shell: bash
-      run: cargo install dioxus-cli
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "website/**"
+      - "resources/**"
 
-    - name: Build Project 🎁
-      shell: bash
-      run: cd website && dx bundle --release && cp ./dist/index.html ./dist/404.html
+env:
+  CARGO_TERM_COLOR: always
 
-    - name: Deploy Project 🚀
-      uses: JamesIves/github-pages-deploy-action@v4.4.1
-      with:
-        branch: gh-pages
-        folder: website/dist
-        clean: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1.0.6
+        with:
+          toolchain: nightly
+          profile: minimal
+          target: wasm32-unknown-unknown
+          override: true
+      - uses: Swatinem/rust-cache@v2
+      - name: Install Dioxus-CLI
+        shell: bash
+        run: cargo install dioxus-cli
+
+      - name: Build Project 🎁
+        shell: bash
+        run: cd website && dx bundle --release && cp ./dist/index.html ./dist/404.html
+
+      - name: Deploy Project 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          branch: gh-pages
+          folder: website/dist
+          clean: false
