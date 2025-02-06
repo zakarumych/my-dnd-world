@@ -2,6 +2,7 @@
 
 # App (Project) Name
 name = "Farport"
+out_dir = "dist"
 
 [web.app]
 

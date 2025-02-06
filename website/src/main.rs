@@ -1,4 +1,4 @@
-use dioxus::prelude::*;
+use dioxus::{prelude::*, logger::tracing::info};
 
 const FAVICON: Asset = asset!("/assets/favicon.ico");
 const MAIN_CSS: Asset = asset!("/assets/main.css");
@@ -31,6 +31,13 @@ pub fn Hero() -> Element {
                 a { href: "https://github.com/DioxusLabs/sdk", "⚙️ Dioxus Development Kit" }
                 a { href: "https://marketplace.visualstudio.com/items?itemName=DioxusLabs.dioxus", "💫 VSCode Extension" }
                 a { href: "https://discord.gg/XgGxMSkvUM", "👋 Community Discord" }
+            }
+            div {
+                class: "bg-red-100",
+                button {
+                    onclick: move |_| info!("Clicked"),
+                    "Click me!"
+                }
             }
         }
     }

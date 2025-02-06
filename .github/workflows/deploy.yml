@@ -1,21 +1,27 @@
-name: Build and Deploy to Github Pages
+name: "Deploy website"
 
-on:
-  workflow_dispatch:
-  push:
-    branches: [ "main" ]
-    paths:
-      - "website/**"
-      - "resources/**"
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+    - uses: actions-rs/toolchain@v1.0.6
+      with:
+        toolchain: nightly
+        profile: minimal
+        target: wasm32-unknown-unknown
+        override: true
+    - uses: Swatinem/rust-cache@v2
+    - name: Install Dioxus-CLI
+      shell: bash
+      run: cargo install dioxus-cli
 
-env:
-  CARGO_TERM_COLOR: always
+    - name: Build Project 🎁
+      shell: bash
+      run: cd website && dx bundle --release && cp ./dist/index.html ./dist/404.html
 
-jobs:
-  build-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Dioxus Deploy"
-        uses: DioxusLabs/deploy-action@0.1.2
-        with:
-          rootPath: "website"
+    - name: Deploy Project 🚀
+      uses: JamesIves/github-pages-deploy-action@v4.4.1
+      with:
+        branch: gh-pages
+        folder: website/dist
+        clean: false
