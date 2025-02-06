@@ -2,14 +2,13 @@
 
 # App (Project) Name
 name = "Farport"
-out_dir = "./dist"
 
 [web.app]
 
 # HTML title tag content
 title = "website"
 
-base_path = "egui-snarl"
+base_path = "my-dnd-world"
 
 # include `assets` in web platform
 [web.resource]
