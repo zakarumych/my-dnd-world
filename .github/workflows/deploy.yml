@@ -5,10 +5,8 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - "demo/**"
-      - "examples/**"
-      - "src/**"
-      - "Cargo.toml"
+      - "website/**"
+      - "resources/**"
 
 env:
   CARGO_TERM_COLOR: always
