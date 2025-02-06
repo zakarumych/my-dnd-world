@@ -12,9 +12,21 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
+      - name: Set up cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1.0.6
         with:
@@ -22,7 +34,6 @@ jobs:
           profile: minimal
           target: wasm32-unknown-unknown
           override: true
-      - uses: Swatinem/rust-cache@v2
       - name: Install Dioxus-CLI
         shell: bash
         run: cargo install dioxus-cli
@@ -31,9 +42,26 @@ jobs:
         shell: bash
         run: cd website && dx bundle --release && cp ./dist/public/index.html ./dist/public/404.html
 
-      - name: Deploy Project 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          branch: gh-pages
-          folder: website/dist/public
-          clean: false
+          path: './dist/public'
+  deploy:
+    needs: build
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages 🚀
+        id: deployment
+        uses: actions/deploy-pages@v4
