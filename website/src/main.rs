@@ -1,8 +1,10 @@
-use dioxus::{prelude::*, logger::tracing::info};
+use dioxus::{logger::tracing::info, prelude::*};
 
-const FAVICON: Asset = asset!("/assets/favicon.ico");
+mod markdown;
+
+use self::markdown::Markdown;
+
 const MAIN_CSS: Asset = asset!("/assets/main.css");
-const HEADER_SVG: Asset = asset!("/assets/header.svg");
 
 fn main() {
     dioxus::launch(App);
@@ -10,35 +12,17 @@ fn main() {
 
 #[component]
 fn App() -> Element {
+    let article = use_resource(|| async move {
+        reqwest::get("https://raw.githubusercontent.com/zakarumych/my-dnd-world/refs/heads/main/articles/hello.md")
+            .await
+            .unwrap()
+            .text()
+            .await
+            .unwrap()
+    });
+
     rsx! {
-        document::Link { rel: "icon", href: FAVICON }
         document::Link { rel: "stylesheet", href: MAIN_CSS }
-        Hero {}
-
-    }
-}
-
-#[component]
-pub fn Hero() -> Element {
-    rsx! {
-        div {
-            id: "hero",
-            img { src: HEADER_SVG, id: "header" }
-            div { id: "links",
-                a { href: "https://dioxuslabs.com/learn/0.6/", "📚 Learn Dioxus" }
-                a { href: "https://dioxuslabs.com/awesome", "🚀 Awesome Dioxus" }
-                a { href: "https://github.com/dioxus-community/", "📡 Community Libraries" }
-                a { href: "https://github.com/DioxusLabs/sdk", "⚙️ Dioxus Development Kit" }
-                a { href: "https://marketplace.visualstudio.com/items?itemName=DioxusLabs.dioxus", "💫 VSCode Extension" }
-                a { href: "https://discord.gg/XgGxMSkvUM", "👋 Community Discord" }
-            }
-            div {
-                class: "bg-red-100",
-                button {
-                    onclick: move |_| info!("Clicked"),
-                    "Click me!"
-                }
-            }
-        }
+        Markdown { content: article.unwrap() }
     }
 }
