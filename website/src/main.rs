@@ -14,6 +14,7 @@ use self::{
 };
 
 const MAIN_CSS: Asset = asset!("/assets/tailwind.css");
+const MD_CSS: Asset = asset!("/assets/md.css");
 
 fn main() {
     dioxus::launch(App);
@@ -29,15 +30,13 @@ enum Route {
         #[route("/world")]
         World { },
 
-        #[nest("/character")]
-            #[route("/")]
-            CharactersList,
+        #[route("/characters")]
+        CharactersList,
 
-            #[route("/:id")]
-            Character {
-                id: String,
-            },
-        #[end_nest]
+        #[route("/character/:id")]
+        Character {
+            id: String,
+        },
     #[end_layout]
 
     #[route("/:..route")]
@@ -49,7 +48,7 @@ enum Route {
 #[component]
 fn Home() -> Element {
     let home_md = use_resource(|| async move {
-        reqwest::get("https://raw.githubusercontent.com/zakarumych/my-dnd-world/refs/heads/main/articles/home.md")
+        reqwest::get("https://zakarumych.github.io/my-dnd-world/resources/articles/home.md")
             .await
             .unwrap()
             .text()
@@ -58,11 +57,8 @@ fn Home() -> Element {
     });
 
     rsx! {
-        div {
-            class: "flex flex-col flex-1 px-8 py-4 bg-gray-100",
-            Markdown {
-                content: home_md.cloned().unwrap_or_default(),
-            }
+        Markdown {
+            content: home_md.cloned().unwrap_or_default(),
         }
     }
 }
@@ -89,6 +85,7 @@ fn PageNotFound(route: Vec<String>) -> Element {
 fn App() -> Element {
     rsx! {
         document::Stylesheet { href: MAIN_CSS }
+        document::Stylesheet { href: MD_CSS }
         meta { name: "viewport", content: "width=device-width, initial-scale=1.0" }
         Router::<Route> { }
         

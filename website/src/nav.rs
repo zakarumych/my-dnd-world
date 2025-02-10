@@ -29,7 +29,7 @@ pub fn Navigation() -> Element {
             }
 
             div {
-                class: "flex flex-1 overflow-auto",
+                class: "flex flex-1 px-8 py-4 overflow-auto bg-gray-100 text-l",
                 // Main content
                 Outlet::<Route> {}
             }
