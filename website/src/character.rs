@@ -21,8 +21,6 @@ impl Default for CharacterDesc {
 pub fn Character(id: String) -> Element {
     let desc = use_signal(CharacterDesc::default);
 
-    desc.
-
     rsx! {
         div {
             h1 { "Character Sheet" }
