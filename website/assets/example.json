@@ -1,0 +1,89 @@
+{
+    "name": "Arin the Brave",
+    "race": "Human",
+    "attributes": {
+        "str": 16,
+        "dex": 12,
+        "con": 14,
+        "int": 10,
+        "wis": 13,
+        "cha": 15
+    },
+    "classes": [
+        {
+            "name": "Fighter",
+            "level": 5
+        },
+        {
+            "name": "Rogue",
+            "level": 2
+        }
+    ],
+    "skills": {
+        "Athletics": {
+            "proficient": true
+        },
+        "Acrobatics": {
+            "proficient": false
+        },
+        "Sleight of Hand": {
+            "proficient": false
+        },
+        "Stealth": {
+            "proficient": true
+        },
+        "Arcana": {
+            "proficient": false
+        },
+        "History": {
+            "proficient": false
+        },
+        "Investigation": {
+            "proficient": false
+        },
+        "Nature": {
+            "proficient": false
+        },
+        "Religion": {
+            "proficient": false
+        },
+        "Animal Handling": {
+            "proficient": false
+        },
+        "Insight": {
+            "proficient": true
+        },
+        "Medicine": {
+            "proficient": false
+        },
+        "Perception": {
+            "proficient": true
+        },
+        "Survival": {
+            "proficient": false
+        },
+        "Deception": {
+            "proficient": false
+        },
+        "Intimidation": {
+            "proficient": true
+        },
+        "Performance": {
+            "proficient": false
+        },
+        "Persuasion": {
+            "proficient": true
+        }
+    },
+    "inventory": [
+        "Longsword",
+        "Shield",
+        "Potion of Healing",
+        "Leather Armor"
+    ],
+    "spells": [
+        "Mage Hand",
+        "Shield",
+        "Thunderwave"
+    ]
+}

@@ -7,9 +7,12 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-dioxus = { version = "0.6.0", features = ["logger"] }
+dioxus = { version = "0.6.3", features = ["logger", "router"] }
 reqwest = { version = "*" }
-pulldown-cmark = "0.9.3"
+pulldown-cmark = "0.12"
+serde = { version = "1.0", features = ["derive"] }
+rand = "0.9"
+getrandom = { version = "0.3", features = ["wasm_js"] }
 
 [features]
 default = ["web"]

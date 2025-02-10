@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D Character Sheet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .sheet {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .flex {
+            display: flex;
+            gap: 10px;
+        }
+
+        .flex label {
+            flex: 1;
+        }
+
+        .scroll-list {
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 5px;
+            background: white;
+        }
+
+        .add-btn {
+            margin-top: 5px;
+            cursor: pointer;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sheet">
+        <h1>D&D Character Sheet</h1>
+        <input type="file" id="file-input" accept="application/json">
+        <button onclick="saveCharacter()">Save</button>
+
+        <div class="section">
+            <h2>Character Info</h2>
+            <div class="flex">
+                <label>Name: <input type="text" id="name"></label>
+                <label>Race: <input type="text" id="race"></label>
+            </div>
+            <label>Proficiency Bonus: <input type="number" id="prof-bonus" value="2" oninput="updateSkills()"></label>
+        </div>
+
+        <div class="section">
+            <h2>Attributes</h2>
+            <div class="flex">
+                <label>STR: <input type="number" id="str" oninput="updateSkills()"></label>
+                <label>DEX: <input type="number" id="dex" oninput="updateSkills()"></label>
+                <label>CON: <input type="number" id="con"></label>
+            </div>
+            <div class="flex">
+                <label>INT: <input type="number" id="int" oninput="updateSkills()"></label>
+                <label>WIS: <input type="number" id="wis" oninput="updateSkills()"></label>
+                <label>CHA: <input type="number" id="cha" oninput="updateSkills()"></label>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Skills</h2>
+            <div id="skills"></div>
+        </div>
+    </div>
+
+    <script>
+        const skills = {
+            "Athletics": "str",
+            "Acrobatics": "dex",
+            "Sleight of Hand": "dex",
+            "Stealth": "dex",
+            "Arcana": "int",
+            "History": "int",
+            "Investigation": "int",
+            "Nature": "int",
+            "Religion": "int",
+            "Animal Handling": "wis",
+            "Insight": "wis",
+            "Medicine": "wis",
+            "Perception": "wis",
+            "Survival": "wis",
+            "Deception": "cha",
+            "Intimidation": "cha",
+            "Performance": "cha",
+            "Persuasion": "cha"
+        };
+
+        function updateSkills() {
+            let skillContainer = document.getElementById("skills");
+            skillContainer.innerHTML = "";
+            let profBonus = parseInt(document.getElementById("prof-bonus").value) || 2;
+
+            Object.entries(skills).forEach(([skill, attr]) => {
+                let attrValue = parseInt(document.getElementById(attr).value) || 10;
+                let mod = Math.floor((attrValue - 10) / 2);
+                skillContainer.innerHTML += `<label>${skill}:
+                    <input type="checkbox" onchange="updateSkillValue(this, ${mod}, ${profBonus})"> 
+                    <input type="checkbox" onchange="updateSkillValue(this, ${mod}, ${profBonus})"> 
+                    <span id="${skill}-value">${mod}</span>
+                </label><br>`;
+            });
+        }
+
+        function updateSkillValue(checkbox, baseMod, bonus) {
+            let label = checkbox.parentElement;
+            let skillSpan = label.querySelector("span");
+            let proficient = label.querySelectorAll("input[type='checkbox']")[0].checked;
+            let expertise = label.querySelectorAll("input[type='checkbox']")[1].checked;
+
+            let totalBonus = proficient ? (expertise ? bonus * 2 : bonus) : 0;
+            skillSpan.textContent = baseMod + totalBonus;
+        }
+    </script>
+</body>
+
+</html>
