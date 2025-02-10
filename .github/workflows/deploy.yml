@@ -27,16 +27,22 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1.0.6
-        with:
-          toolchain: nightly
-          profile: minimal
-          target: wasm32-unknown-unknown
-          override: true
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+
+      - name: Install TailwindCSS
+        shell: bash
+        run: npm install tailwindcss @tailwindcss/cli
+
       - name: Install Dioxus-CLI
         shell: bash
         run: cargo install dioxus-cli
+
+      - name: Generate CSS
+        shell: bash
+        run: cd website && npx tailwindcss -i ./input.css -o ./assets/tailwind.css
 
       - name: Build Project 🎁
         shell: bash
