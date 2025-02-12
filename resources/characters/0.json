@@ -1,7 +1,9 @@
 {
     "name": "Arin the Brave",
     "species": "Human",
-    "classes": { "Fighter": 1 },
+    "classes": {
+        "Fighter": 1
+    },
     "alignment": "Lawful Good",
     "origin": "Criminal",
     "str": 16,
