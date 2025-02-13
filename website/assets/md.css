@@ -60,9 +60,9 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,300);
 
 div.md-content {
-    color: #444;
+    color: #222;
     font-family: 'Open Sans', Helvetica, sans-serif;
-    font-weight: 300;
+    font-weight: 400;
     margin: 6rem auto 1rem;
     max-width: 48rem;
     text-align: center;
@@ -75,15 +75,17 @@ div.md-content {
     width: 200px;
 }
 
-.md-content a,
+.md-content a {
+    background-color: var(--color-gray-200);
+}
 .md-content a:visited {
-    color: #3498db;
+    background-color: var(--color-gray-200);
 }
 
 .md-content a:hover,
 .md-content a:focus,
 .md-content a:active {
-    color: #2980b9;
+    background-color: var(--color-amber-200);
 }
 
 .md-content pre {
