@@ -56,7 +56,7 @@ mod alignment {
 
     use serde::{
         de::{self, Deserialize, Deserializer, Visitor},
-        ser::{Serialize, Serializer, SerializeTuple},
+        ser::{Serialize, SerializeTuple, Serializer},
     };
 
     use super::{Morality, Order};
@@ -70,8 +70,7 @@ mod alignment {
             let alignment_str = format!("{:?} {:?}", alignment.0, alignment.1);
             serializer.serialize_str(&alignment_str)
         } else {
-            let mut serializer = serializer
-                .serialize_tuple(2)?;
+            let mut serializer = serializer.serialize_tuple(2)?;
             serializer.serialize_element(&alignment.0)?;
             serializer.serialize_element(&alignment.1)?;
             serializer.end()
@@ -175,20 +174,19 @@ pub struct Character {
     pub species: Species,
 
     #[serde(skip_serializing_if = "HashMap::is_empty", default)]
-    classes: HashMap<Class, u8>,
+    classes: HashMap<Class, u32>,
 
     #[serde(with = "alignment")]
     pub alignment: (Order, Morality),
 
     pub origin: String,
 
-    pub r#str: u8,
-    pub dex: u8,
-    pub con: u8,
-    pub int: u8,
-    pub wis: u8,
-    pub cha: u8,
-
+    pub r#str: u32,
+    pub dex: u32,
+    pub con: u32,
+    pub int: u32,
+    pub wis: u32,
+    pub cha: u32,
     // pub max_hp: u16,
 
     // #[serde(skip_serializing_if = "is_zero", default)]
@@ -240,5 +238,9 @@ impl Character {
             // flaws: Vec::new(),
             // notes: String::new(),
         }
+    }
+
+    pub fn total_level(&self) -> u32 {
+        self.classes.values().sum::<u32>()
     }
 }

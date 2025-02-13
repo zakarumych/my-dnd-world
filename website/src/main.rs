@@ -1,9 +1,9 @@
 use dioxus::{logger::tracing::info, prelude::*, router::prelude::*};
 
+mod character;
 mod markdown;
 mod nav;
 mod props;
-mod character;
 mod world;
 
 use self::{
@@ -47,18 +47,9 @@ enum Route {
 
 #[component]
 fn Home() -> Element {
-    let home_md = use_resource(|| async move {
-        reqwest::get("https://zakarumych.github.io/my-dnd-world/resources/articles/home.md")
-            .await
-            .unwrap()
-            .text()
-            .await
-            .unwrap()
-    });
-
     rsx! {
         Markdown {
-            content: home_md.cloned().unwrap_or_default(),
+            url: "https://zakarumych.github.io/my-dnd-world/resources/articles/home.md",
         }
     }
 }
@@ -88,6 +79,6 @@ fn App() -> Element {
         document::Stylesheet { href: MD_CSS }
         meta { name: "viewport", content: "width=device-width, initial-scale=1.0" }
         Router::<Route> { }
-        
+
     }
 }

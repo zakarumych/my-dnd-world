@@ -11,8 +11,39 @@ pub fn Character(id: String) -> Element {
 
     rsx! {
         div {
-            h1 { "Character Sheet" }
-            div { "name" } input { r#type: "text", value: "{c.name}" }
+            class: "flex flex-col",
+            div {
+                class: "flex flex-1",
+
+                div {
+                    class: "flex flex-col",
+                    span {
+                        class: "text-3xl",
+                        "Character"
+                    }
+                    div {
+                        class: "flex gap-4",
+                        div {
+                            class: "text-5xl",
+                            "{c.name}"
+                        }
+                        div {
+                            class: "text-5xl",
+                            "{c.total_level()}"
+                        }
+                    }
+                }
+
+                div {
+                    class: "grid grid-cols-3 content-start gap-4",
+                    input { r#type: "text", placeholder: "race & class" }
+                    div { "2" }
+                    div { "3" }
+                    div { "4" }
+                    div { "5" }
+                    div { "6" }
+                }
+            }
         }
     }
 }
@@ -35,12 +66,19 @@ pub fn CharactersList() -> Element {
         if files.is_empty() {
             return;
         }
-        assert_eq!(files.len(), 1, "Only one character file can be uploaded at a time");
+        assert_eq!(
+            files.len(),
+            1,
+            "Only one character file can be uploaded at a time"
+        );
         let file = files.remove(0);
         tracing::info!("Character file uploaded: {:?}", file);
 
         spawn(async move {
-            let file_bytes = file_engine.read_file(&file).await.expect("one uploaded file content missing");
+            let file_bytes = file_engine
+                .read_file(&file)
+                .await
+                .expect("one uploaded file content missing");
             match serde_json::from_slice::<props::Character>(&file_bytes) {
                 Err(err) => {
                     tracing::error!("Failed to parse character file: {:?}", err);

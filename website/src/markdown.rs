@@ -243,7 +243,7 @@ fn pull_elements<'a, 'b: 'a>(mut iter: &'a mut Parser<'b>, cx: &'a mut Context<'
 /// Render some text as markdown.
 #[component]
 pub fn Markdown(content: String) -> Element {
-    let mut parser = Parser::new(&content);
+    let parser = Parser::new(&content);
 
     let mut cx = Context::new();
     let elements = pull_elements(&mut parser, &mut cx);
