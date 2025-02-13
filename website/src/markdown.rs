@@ -243,6 +243,13 @@ fn pull_elements<'a, 'b: 'a>(mut iter: &'a mut Parser<'b>, cx: &'a mut Context<'
 /// Render some text as markdown.
 #[component]
 pub fn Markdown(content: String) -> Element {
+    let content = use_resource(move || {
+        let url = url.clone();
+        async move { reqwest::get(url).await.unwrap().text().await.unwrap() }
+    });
+
+    let content = content.cloned().unwrap_or_default();
+
     let parser = Parser::new(&content);
 
     let mut cx = Context::new();
