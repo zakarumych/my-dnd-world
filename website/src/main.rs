@@ -32,6 +32,11 @@ enum Route {
         Character {
             id: String,
         },
+
+        #[route("/article/:path")]
+        Article {
+            path: String,
+        },
     #[end_layout]
 
     #[route("/:..route")]
@@ -42,24 +47,20 @@ enum Route {
 
 #[component]
 pub fn Article(path: String) -> Element {
-    let url = if path.starts_with('/') {
-        format!("https://zakarumych.github.io/my-dnd-world/resources/articles{path}")
-    } else {
+    let url = if path.ends_with(".md") {
         format!("https://zakarumych.github.io/my-dnd-world/resources/articles/{path}")
+    } else {
+        format!("https://zakarumych.github.io/my-dnd-world/resources/articles/{path}.md")
     };
 
     rsx! {
-        Markdown { url  }
+        Markdown { url }
     }
 }
 
 #[component]
 fn Home() -> Element {
-    rsx! {
-        Article {
-            path: "world.md",
-        }
-    }
+    rsx! {}
 }
 
 #[component]
