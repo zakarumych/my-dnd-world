@@ -21,11 +21,6 @@ pub fn Navigation() -> Element {
                     to: Route::CharactersList { },
                     "Characters"
                 }
-                Link {
-                    class: "flex justify-center px-8 py-4 bg-gray-100 hover:bg-amber-200",
-                    to: Route::World { },
-                    "World"
-                }
             }
 
             div {

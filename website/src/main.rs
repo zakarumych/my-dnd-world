@@ -4,13 +4,11 @@ mod character;
 mod markdown;
 mod nav;
 mod props;
-mod world;
 
 use self::{
     character::{Character, CharactersList},
     markdown::Markdown,
     nav::Navigation,
-    world::World,
 };
 
 const MAIN_CSS: Asset = asset!("/assets/tailwind.css");
@@ -26,9 +24,6 @@ enum Route {
     #[layout(Navigation)]
         #[route("/")]
         Home { },
-
-        #[route("/world")]
-        World { },
 
         #[route("/characters")]
         CharactersList,
@@ -46,10 +41,23 @@ enum Route {
 }
 
 #[component]
+pub fn Article(path: String) -> Element {
+    let url = if path.starts_with('/') {
+        format!("https://zakarumych.github.io/my-dnd-world/resources/articles{path}")
+    } else {
+        format!("https://zakarumych.github.io/my-dnd-world/resources/articles/{path}")
+    };
+
+    rsx! {
+        Markdown { url  }
+    }
+}
+
+#[component]
 fn Home() -> Element {
     rsx! {
-        Markdown {
-            url: "https://zakarumych.github.io/my-dnd-world/resources/articles/home.md",
+        Article {
+            path: "world.md",
         }
     }
 }
