@@ -35,6 +35,33 @@ fn escape_html<S>(s: S) -> HtmlEscaped<S> {
     HtmlEscaped(s)
 }
 
+struct HtmlBodyEscaped<S>(S);
+
+impl<S> fmt::Display for HtmlBodyEscaped<S>
+where
+    S: AsRef<str>,
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        pulldown_cmark_escape::escape_html_body_text(
+            pulldown_cmark_escape::FmtWriter(f),
+            self.0.as_ref(),
+        )
+    }
+}
+
+impl<S> fmt::Debug for HtmlBodyEscaped<S>
+where
+    S: AsRef<str>,
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt::Display::fmt(&self, f)
+    }
+}
+
+fn escape_html_body<S>(s: S) -> HtmlBodyEscaped<S> {
+    HtmlBodyEscaped(s)
+}
+
 struct HrefEscaped<S>(S);
 
 impl<S> fmt::Display for HrefEscaped<S>
@@ -311,13 +338,13 @@ fn pull_elements<'a, 'b: 'a>(
             }
             Event::Text(text) => {
                 if !cx.in_non_writing_block {
-                    rsx! { {escape_html(text).to_string()} }
+                    rsx! { {escape_html_body(text).to_string()} }
                 } else {
                     rsx!()
                 }
             }
             Event::Code(code) => {
-                rsx! { code { {escape_html(code).to_string()} } }
+                rsx! { code { {escape_html_body(code).to_string()} } }
             }
             Event::InlineMath(math) => {
                 rsx! { span { class: "math inline-math", {escape_html(math).to_string()} } }
@@ -365,12 +392,15 @@ fn pull_elements<'a, 'b: 'a>(
 /// Render some text as markdown.
 #[component]
 pub fn Markdown(url: String) -> Element {
+    let url2 = url.clone();
     let content = use_resource(move || {
         let url = url.clone();
         async move { reqwest::get(url).await.unwrap().text().await.unwrap() }
     });
 
     let content = content.cloned().unwrap_or_default();
+
+    // tracing::debug!("Markdown ({url2}) content: {content}");
 
     let mut parser = Parser::new(&content);
 
