@@ -2,4 +2,4 @@
 
 Мир Этирион (Ætherion) — это основной мир в котором происходят события кампаний.
 
-Первая кампаний называется ["Турнир Меча и Магии"](/article/campaigns/Tournament_of_Might&Magic/campaign).
+Первая кампаний называется ["Турнир Меча и Магии"](/article/campaigns/Tournament/campaign).

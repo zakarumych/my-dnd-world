@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use dioxus::{logger::tracing::info, prelude::*, router::prelude::*};
 
 mod character;
@@ -33,9 +35,9 @@ enum Route {
             id: String,
         },
 
-        #[route("/article/:path")]
+        #[route("/article/:..segments")]
         Article {
-            path: String,
+            segments: Vec<String>,
         },
     #[end_layout]
 
@@ -46,11 +48,12 @@ enum Route {
 }
 
 #[component]
-pub fn Article(path: String) -> Element {
+pub fn Article(segments: Vec<String>) -> Element {
+    let path = join_strings(segments.iter(), '/').unwrap_or_else(|| "index".to_string());
     let url = if path.ends_with(".md") {
-        format!("https://zakarumych.github.io/my-dnd-world/resources/articles/{path}")
+        format!("https://raw.githubusercontent.com/zakarumych/my-dnd-world/refs/heads/main/resources/articles/{path}")
     } else {
-        format!("https://zakarumych.github.io/my-dnd-world/resources/articles/{path}.md")
+        format!("https://raw.githubusercontent.com/zakarumych/my-dnd-world/refs/heads/main/resources/articles/{path}.md")
     };
 
     rsx! {
@@ -90,4 +93,23 @@ fn App() -> Element {
         Router::<Route> { }
 
     }
+}
+
+fn join_strings<T>(mut strings: impl Iterator<Item = T>, separator: impl Display) -> Option<String>
+where
+    T: Display,
+{
+    use std::fmt::Write;
+
+    let first = strings.next()?;
+    let lower = strings.size_hint().0;
+
+    let mut result = String::with_capacity(lower);
+    write!(result, "{}", first).unwrap();
+
+    for item in strings {
+        write!(result, "{separator}{item}").unwrap();
+    }
+
+    Some(result)
 }

@@ -9,7 +9,7 @@ use pulldown_cmark::{
     TagEnd,
 };
 
-use crate::props::ArmorCategory;
+use crate::{join_strings, props::ArmorCategory};
 
 struct HtmlEscaped<S>(S);
 
@@ -130,7 +130,7 @@ fn pull_elements<'a, 'b: 'a>(
                     attrs,
                 } => {
                     let id = id.map(|id| escape_html(id).to_string());
-                    let classes = join_classes(classes.iter().map(|class| escape_html(class)));
+                    let classes = join_strings(classes.iter().map(|class| escape_html(class)), ' ');
 
                     match level {
                         HeadingLevel::H1 => rsx! { h1 {
@@ -410,23 +410,4 @@ pub fn Markdown(url: String) -> Element {
     rsx! {
         div { class: "md-content", {elements} }
     }
-}
-
-fn join_classes<T>(mut classes: impl Iterator<Item = T>) -> Option<String>
-where
-    T: Display,
-{
-    use fmt::Write;
-
-    let first = classes.next()?;
-    let lower = classes.size_hint().0;
-
-    let mut result = String::with_capacity(lower);
-    write!(result, "{}", first).unwrap();
-
-    for class in classes {
-        write!(result, " {}", class).unwrap();
-    }
-
-    Some(result)
 }
