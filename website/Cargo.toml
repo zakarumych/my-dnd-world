@@ -11,13 +11,13 @@ dioxus = { version = "0.6.3", features = ["logger", "router"] }
 dioxus-sdk = { version = "0.6", features = ["storage"] }
 
 reqwest = { version = "*" }
-pulldown-cmark = "0.12"
+pulldown-cmark = "0.13"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 rand = "0.9"
 getrandom = { version = "0.3", features = ["wasm_js"] }
 tracing = "0.1"
-pulldown-cmark-escape  = "0.11"
+pulldown-cmark-escape = "0.11"
 
 [features]
 default = ["web"]

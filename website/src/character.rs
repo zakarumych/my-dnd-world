@@ -53,8 +53,6 @@ pub fn CharactersList() -> Element {
     let create_character = || {
         let new_id = rand::random::<u128>();
 
-        use_persistent(new_id, || props::Character::new());
-
         navigator().push(Route::Character {
             id: new_id.to_string(),
         });
@@ -85,7 +83,6 @@ pub fn CharactersList() -> Element {
                 }
                 Ok(character) => {
                     let new_id = rand::random::<u128>();
-                    use_persistent(new_id, || character);
                     navigator().push(Route::Character {
                         id: new_id.to_string(),
                     });
