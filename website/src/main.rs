@@ -50,6 +50,9 @@ enum Route {
 #[component]
 pub fn Article(segments: Vec<String>) -> Element {
     let path = join_strings(segments.iter(), '/').unwrap_or_else(|| "index".to_string());
+
+    tracing::debug!("Article path: {}", path);
+
     let url = if path.ends_with(".md") {
         format!("https://raw.githubusercontent.com/zakarumych/my-dnd-world/refs/heads/main/resources/articles/{path}")
     } else {

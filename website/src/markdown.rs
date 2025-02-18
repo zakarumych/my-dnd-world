@@ -392,22 +392,26 @@ fn pull_elements<'a, 'b: 'a>(
 /// Render some text as markdown.
 #[component]
 pub fn Markdown(url: String) -> Element {
-    let url2 = url.clone();
-    let content = use_resource(move || {
+    let resource = use_resource(use_reactive!(|url| {
         let url = url.clone();
-        async move { reqwest::get(url).await.unwrap().text().await.unwrap() }
-    });
+        tracing::debug!("Loading markdown ({url})");
 
-    let content = content.cloned().unwrap_or_default();
+        async move { reqwest::get(&url).await.unwrap().text().await.unwrap() }
+    }));
 
-    // tracing::debug!("Markdown ({url2}) content: {content}");
+    let reader = resource.read();
+    if let Some(content) = &*reader {
+        let mut parser = Parser::new(content);
 
-    let mut parser = Parser::new(&content);
+        let mut cx = Context::new();
+        let elements = pull_elements(&mut parser, &mut cx);
 
-    let mut cx = Context::new();
-    let elements = pull_elements(&mut parser, &mut cx);
-
-    rsx! {
-        div { class: "md-content", {elements} }
+        rsx! {
+            div { class: "md-content", {elements} }
+        }
+    } else {
+        rsx! {
+            div { class: "md-content", "Loading..." }
+        }
     }
 }
